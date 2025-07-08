@@ -67,7 +67,8 @@ export const registerUser = async (req, res) => {
 
     const options = {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
     };
 
     res
@@ -116,15 +117,16 @@ export const loginUser = async (req, res) => {
       "-password -refreshToken"
     );
 
-    const Options = {
+    const options = {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
     };
 
     return res
       .status(200)
-      .cookie("accessToken", accessToken, Options)
-      .cookie("refreshToken", refreshToken, Options)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
       .json({
         success: true,
         message: "Welcome back",
@@ -151,7 +153,7 @@ export const logoutUser = async (req, res) => {
 
     const options = {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
     };
 
@@ -192,29 +194,49 @@ export const refreshAccessToken = async (req, res) => {
     const { refreshToken } = req.cookies;
 
     if (!refreshToken) {
-      return res.status(401).json({ error: "Please login" });
+      return res.status(401).json({ 
+        success: false, 
+        error: "No refresh token provided - please login" 
+      });
     }
 
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    let decoded;
+    try {
+      decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    } catch (jwtError) {
+      console.error("JWT verification failed:", jwtError.message);
+      return res.status(401).json({ 
+        success: false, 
+        error: "Invalid refresh token - please login again" 
+      });
+    }
+
     const user = await User.findById(decoded._id).select("-password");
 
     if (!user) {
-      return res.status(401).json({ error: "User not found" });
+      return res.status(401).json({ 
+        success: false, 
+        error: "User not found - please login again" 
+      });
     }
 
     if (user.refreshToken !== refreshToken) {
-      return res.status(401).json({ error: "Invalid refresh token" });
+      // Clear the invalid refresh token from database
+      user.refreshToken = undefined;
+      await user.save({ validateBeforeSave: false });
+      
+      return res.status(401).json({ 
+        success: false, 
+        error: "Invalid refresh token - please login again" 
+      });
     }
 
     const { accessToken, refreshToken: newRefreshToken } =
       await generateAccessAndRefreshToken(user._id);
 
-    user.refreshToken = newRefreshToken;
-    await user.save({ validateBeforeSave: false });
-
     const options = {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
     };
 
@@ -222,9 +244,21 @@ export const refreshAccessToken = async (req, res) => {
       .status(200)
       .cookie("accessToken", accessToken, options)
       .cookie("refreshToken", newRefreshToken, options)
-      .json({ success: true, message: "Tokens refreshed successfully" });
+      .json({ 
+        success: true, 
+        message: "Tokens refreshed successfully",
+        user: {
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+          role: user.role
+        }
+      });
   } catch (error) {
     console.error("Error refreshing access token:", error.message);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ 
+      success: false, 
+      error: "Internal server error" 
+    });
   }
 };

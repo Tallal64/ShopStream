@@ -5,8 +5,8 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 export const createProduct = async (req, res) => {
   const product = req.body;
 
-  if (!product.title || !product.price) {
-    return res.status(401).json({ error: "All the fields are required" });
+  if (!product.title?.trim() || !product.price || !product.categories?.trim() || !product.description?.trim()) {
+    return res.status(400).json({ error: "All the fields are required" });
   }
 
   try {

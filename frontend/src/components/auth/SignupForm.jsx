@@ -29,6 +29,8 @@ export default function SignupForm() {
   const handleSignup = async (e) => {
     e.preventDefault();
 
+    console.log(userData);
+
     if (userData.password !== userData.confirmPassword) {
       toast.error("Passwords do not match!");
       return;
@@ -97,7 +99,13 @@ export default function SignupForm() {
                 <Label htmlFor="role">Role</Label>
                 <div className="relative">
                   <UserRoundCog className="absolute z-10 w-4 h-4 transform -translate-y-1/2 left-3 top-1/2 text-muted-foreground" />
-                  <Select value={role} onValueChange={setRole}>
+                  <Select
+                    value={role}
+                    onValueChange={(role) => {
+                      setRole(role);
+                      setUserData({ ...userData, role });
+                    }}
+                  >
                     <SelectTrigger className="w-full pl-10">
                       <SelectValue placeholder="Select your role" />
                     </SelectTrigger>

@@ -8,22 +8,46 @@ export const verifyJWT = async (req, res, next) => {
       req.header("Authorization")?.replace("Bearer ", "");
 
     if (!token) {
-      return res.status(401).json({ error: "please login" });
+      return res.status(401).json({ 
+        success: false,
+        error: "Access token required - please login" 
+      });
     }
 
-    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    let decodedToken;
+    try {
+      decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    } catch (jwtError) {
+      if (jwtError.name === 'TokenExpiredError') {
+        return res.status(401).json({ 
+          success: false,
+          error: "Access token expired",
+          tokenExpired: true
+        });
+      }
+      return res.status(401).json({ 
+        success: false,
+        error: "Invalid access token" 
+      });
+    }
 
     const user = await User.findById(decodedToken?._id);
 
     if (!user) {
-      return res.status(401).json({ error: "invalid access token" });
+      return res.status(401).json({ 
+        success: false,
+        error: "User not found - invalid access token" 
+      });
     }
 
     req.user = user;
-
     next();
   } catch (error) {
-    res.status(401).json({ error: "unauthorized request" }); 
+    console.error('Auth middleware error:', error);
+    res.status(401).json({ 
+      success: false,
+      error: "Unauthorized request" 
+    }); 
   }
 };
 
