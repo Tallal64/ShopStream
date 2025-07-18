@@ -19,6 +19,7 @@ export default function App() {
         const response = await refreshAccessToken();
         if (response?.success) {
           console.log("User refreshed successfully:", response.message);
+
           await getCurrentUser();
         } else {
           console.error("Failed to refresh user in app.jsx:", response.error);

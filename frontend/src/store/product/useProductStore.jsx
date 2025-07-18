@@ -5,7 +5,7 @@ export const useProductStore = create((set) => ({
   products: [],
   isLoading: false,
 
- createProduct: async (productData) => {
+  createProduct: async (productData) => {
     try {
       set({ isLoading: true });
 
@@ -18,7 +18,7 @@ export const useProductStore = create((set) => ({
         formData.append("image", productData.image);
       }
 
-      const response = await fetch("http://localhost:8080/api/products", {
+      const response = await fetch("/api/products", {
         method: "POST",
         body: formData,
         credentials: "include",
@@ -39,6 +39,27 @@ export const useProductStore = create((set) => ({
       console.error("Error creating product:", error);
       toast.error("Failed to create product: Network error");
       return { success: false, error: "Network error" };
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  getAllProducts: async () => {
+    try {
+      set({ isLoading: true });
+      const response = await fetch("/api/products", {
+        credentials: "include",
+      });
+
+      const responseData = await response.json();
+      if (responseData.success) {
+        set({ products: responseData.data });
+      } else {
+        toast.error(responseData.error || "Failed to fetch products");
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      toast.error("Failed to fetch products: Network error");
     } finally {
       set({ isLoading: false });
     }

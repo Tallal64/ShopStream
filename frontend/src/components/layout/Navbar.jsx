@@ -14,12 +14,15 @@ import { Button } from "../ui/button";
 
 export default function Navbar() {
   const { user, logout } = useAuthStore();
-
   const { isDarkMode, setTheme } = useTheme();
+  
+  // Check if the user is an admin
+  const isAdmin = user?.role === "admin";
 
   const handleClick = () => {
     setTheme();
   };
+
   if (isDarkMode) {
     document.documentElement.classList.add("dark");
   } else {
@@ -43,12 +46,15 @@ export default function Navbar() {
             )}
             <span className="sr-only">Toggle theme</span>
           </Button>
-          <Button variant="ghost" asChild>
-            <Link to="/dashboard">
-              <LayoutDashboard className="w-4 h-4 mr-2" />
-              Dashboard
-            </Link>
-          </Button>
+          {isAdmin && (
+            <Button variant="ghost" asChild>
+              <Link to="/dashboard">
+                <LayoutDashboard className="w-4 h-4 mr-2" />
+                Dashboard
+              </Link>
+            </Button>
+          )}
+
           {!user && (
             <Button variant="default" asChild>
               <Link to="/login">

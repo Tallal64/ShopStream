@@ -1,7 +1,9 @@
-import React from 'react'
+import { CategoryGrid } from "./CategoryGrid";
 
 export default function Home() {
   return (
-    <div>Home</div>
-  )
+    <div>
+      <CategoryGrid />
+    </div>
+  );
 }
