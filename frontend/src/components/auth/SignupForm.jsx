@@ -29,12 +29,11 @@ export default function SignupForm() {
   const handleSignup = async (e) => {
     e.preventDefault();
 
-    console.log(userData);
-
     if (userData.password !== userData.confirmPassword) {
       toast.error("Passwords do not match!");
       return;
     }
+
 
     try {
       const response = await registerUser(userData);

@@ -1,11 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -74,20 +68,16 @@ export default function CreateProductForm() {
   };
 
   return (
-    <div className="py-8 px-4">
+    <div className="px-4 py-8">
       <div className="max-w-2xl mx-auto">
-        <Card>
+        <Card className="py-8">
           <CardHeader>
             <CardTitle className="text-2xl font-bold">
               Create New Product
             </CardTitle>
-            <CardDescription>
-              Fill in the details below to add a new product to your inventory.
-            </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Title Field */}
               <div className="space-y-2">
                 <Label htmlFor="title">Product Title</Label>
                 <Input
@@ -115,7 +105,6 @@ export default function CreateProductForm() {
                 />
               </div>
 
-              {/* Image Upload Field */}
               <div className="space-y-2">
                 <Label htmlFor="image">Product Image</Label>
                 <div className="flex items-center justify-center w-full">
@@ -133,7 +122,7 @@ export default function CreateProductForm() {
                         PNG, JPG or JPEG (MAX. 5MB)
                       </p>
                       {formData.image && (
-                        <p className="text-xs text-green-600 mt-2">
+                        <p className="mt-2 text-xs text-green-600">
                           Selected: {formData.image.name}
                         </p>
                       )}
@@ -164,9 +153,11 @@ export default function CreateProductForm() {
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="men">Men</SelectItem>
-                    <SelectItem value="women">Women</SelectItem>
+                    <SelectItem value="gents">Gents</SelectItem>
+                    <SelectItem value="ladies">Ladies</SelectItem>
                     <SelectItem value="kids">Kids</SelectItem>
+                    <SelectItem value="accessories">accessories</SelectItem>
+                    <SelectItem value="footwear">footwear</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -3,9 +3,11 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Navbar from "./components/layout/Navbar";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
-import Home from "./pages/Home";
+import Home from "./pages/home";
 import { useAuthStore } from "./store/auth/useAuthStore";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/dashboard";
+import CategoryProducts from "./pages/category/CategoryProducts";
+import { ProductDetails } from "./pages/productDetail/ProductDetails";
 
 export default function App() {
   const { user, getCurrentUser, refreshAccessToken, isLoading } =
@@ -52,6 +54,9 @@ export default function App() {
             path="/dashboard"
             element={isAdmin ? <Dashboard /> : <Navigate to="/" />}
           />
+
+          <Route path="/:category" element={<CategoryProducts />} />
+          <Route path="/product/:_id" element={<ProductDetails />} />
         </Routes>
       </div>
     </div>

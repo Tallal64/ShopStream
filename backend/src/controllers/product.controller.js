@@ -5,7 +5,12 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 export const createProduct = async (req, res) => {
   const product = req.body;
 
-  if (!product.title?.trim() || !product.price || !product.categories?.trim() || !product.description?.trim()) {
+  if (
+    !product.title?.trim() ||
+    !product.price ||
+    !product.category?.trim() ||
+    !product.description?.trim()
+  ) {
     return res.status(400).json({ error: "All the fields are required" });
   }
 
@@ -66,7 +71,7 @@ export const getProduct = async (req, res) => {
       return res.status(401).json({ error: "unable to find the product" });
     }
 
-    res.status(200).json(product);
+    res.status(200).json({ success: true, data: product });
   } catch (error) {
     res.status(500).json({ error: "Server Error" });
   }
@@ -133,6 +138,31 @@ export const updateProduct = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       error: "error while updating product",
+    });
+  }
+};
+
+export const getProductsByCategory = async (req, res) => {
+  try {
+    const { category } = req.params;
+
+    if (!category) {
+      return res.status(400).json({ error: "Category parameter is required" });
+    }
+
+    const products = await Product.find({
+      category: { $regex: new RegExp(category, "i") },
+    });
+
+    res.status(200).json({
+      success: true,
+      data: products,
+      category: category,
+    });
+  } catch (error) {
+    console.error("Error fetching products by category:", error);
+    res.status(500).json({
+      error: "Error when getting products by category",
     });
   }
 };

@@ -3,6 +3,7 @@ import { create } from "zustand";
 
 export const useProductStore = create((set) => ({
   products: [],
+  categoryProducts: [],
   isLoading: false,
 
   createProduct: async (productData) => {
@@ -12,7 +13,7 @@ export const useProductStore = create((set) => ({
       const formData = new FormData();
       formData.append("title", productData.title);
       formData.append("price", productData.price);
-      formData.append("categories", productData.category);
+      formData.append("category", productData.category);
       formData.append("description", productData.description);
       if (productData.image) {
         formData.append("image", productData.image);
@@ -60,6 +61,52 @@ export const useProductStore = create((set) => ({
     } catch (error) {
       console.error("Error fetching products:", error);
       toast.error("Failed to fetch products: Network error");
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  getProductsByCategory: async (category) => {
+    try {
+      set({ isLoading: true });
+      const response = await fetch(`/api/products/category/${category}`, {
+        credentials: "include",
+      });
+
+      const responseData = await response.json();
+      if (responseData.success) {
+        set({ categoryProducts: responseData.data });
+      } else {
+        toast.error(responseData.error || "Failed to fetch category products");
+        set({ categoryProducts: [] });
+      }
+    } catch (error) {
+      console.error("Error fetching category products:", error);
+      toast.error("Failed to fetch category products: Network error");
+      set({ categoryProducts: [] });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  getProductById: async (_id) => {
+    try {
+      set({ isLoading: true });
+      const response = await fetch(`/api/products/${_id}`, {
+        credentials: "include",
+      });
+
+      const responseData = await response.json();
+      if (responseData.success) {
+        return responseData;
+      } else {
+        toast.error(responseData.error || "Failed to fetch product");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching product by ID:", error);
+      toast.error("Failed to fetch product: Network error");
+      return null;
     } finally {
       set({ isLoading: false });
     }
