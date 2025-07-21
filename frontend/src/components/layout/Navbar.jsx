@@ -15,7 +15,7 @@ import { Button } from "../ui/button";
 export default function Navbar() {
   const { user, logout } = useAuthStore();
   const { isDarkMode, setTheme } = useTheme();
-  
+
   // Check if the user is an admin
   const isAdmin = user?.role === "admin";
 
@@ -34,7 +34,9 @@ export default function Navbar() {
       <div className="container flex items-center justify-between h-16 px-4 mx-auto">
         <Link to="/" className="flex items-center gap-2">
           <ShoppingBag className="w-6 h-6 text-primary" />
-          <span className="text-xl font-bold">eStore</span>
+          <span className="text-xl font-bold">
+            shop<span className="text-primary">Stream</span>
+          </span>
         </Link>
 
         <nav className="flex items-center gap-2">
