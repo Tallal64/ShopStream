@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import Navbar from "./components/layout/Navbar";
+import Navbar from "./components/layout/Header";
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import Home from "./pages/home";
@@ -8,6 +8,7 @@ import { useAuthStore } from "./store/auth/useAuthStore";
 import Dashboard from "./pages/dashboard";
 import CategoryProducts from "./pages/category/CategoryProducts";
 import { ProductDetails } from "./pages/productDetail/ProductDetails";
+import { Cart } from "./components/layout/Cart";
 
 export default function App() {
   const { user, getCurrentUser, refreshAccessToken, isLoading } =
@@ -57,6 +58,7 @@ export default function App() {
 
           <Route path="/:category" element={<CategoryProducts />} />
           <Route path="/product/:_id" element={<ProductDetails />} />
+          <Route path="/cart" element={<Cart />} />
         </Routes>
       </div>
     </div>

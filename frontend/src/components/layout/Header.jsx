@@ -5,14 +5,16 @@ import {
   LogIn,
   Moon,
   ShoppingBag,
+  ShoppingCart,
   Sun,
   UserRoundPlus,
 } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
 
-export default function Navbar() {
+export default function Header() {
   const { user, logout } = useAuthStore();
   const { isDarkMode, setTheme } = useTheme();
 
@@ -56,6 +58,20 @@ export default function Navbar() {
               </Link>
             </Button>
           )}
+
+          <Button
+            asChild
+            variant={"secondary"}
+            className="relative flex items-center gap-2"
+          >
+            <Link to="/cart">
+              <ShoppingCart className="w-5 h-5" />
+              <span className="hidden sm:inline">Cart</span>
+              <Badge className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs">
+                {1}
+              </Badge>
+            </Link>
+          </Button>
 
           {!user && (
             <Button variant="default" asChild>

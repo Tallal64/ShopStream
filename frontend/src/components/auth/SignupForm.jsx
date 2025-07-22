@@ -51,7 +51,7 @@ export default function SignupForm() {
 
   return (
     <div className="flex items-center justify-center w-full px-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md py-8">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-2">
             <Shield className="w-10 h-10 text-primary" />

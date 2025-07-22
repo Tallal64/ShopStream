@@ -10,14 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useProductStore } from "@/store/product/useProductStore";
+import { useProductAPIs } from "@/store/product/useProductAPIs";
 import { Upload } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function CreateProductForm() {
   const navigate = useNavigate();
-  const { createProduct } = useProductStore();
+  const { createProduct } = useProductAPIs();
   const [formData, setFormData] = useState({
     title: "",
     price: "",

@@ -14,6 +14,8 @@ export default app;
 // importing routes
 import productRoutes from "./routes/product.route.js";
 import userRoutes from "./routes/user.route.js";
+import cartRoutes from "./routes/cart.route.js";
 
 app.use("/api/products", productRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/cart", cartRoutes);

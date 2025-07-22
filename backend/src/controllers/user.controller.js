@@ -16,7 +16,6 @@ const generateAccessAndRefreshToken = async (userId) => {
   }
 };
 
-
 export const registerUser = async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
@@ -195,9 +194,9 @@ export const refreshAccessToken = async (req, res) => {
     const { refreshToken } = req.cookies;
 
     if (!refreshToken) {
-      return res.status(401).json({ 
-        success: false, 
-        error: "No refresh token provided - please login" 
+      return res.status(401).json({
+        success: false,
+        error: "No refresh token provided - please login",
       });
     }
 
@@ -206,18 +205,18 @@ export const refreshAccessToken = async (req, res) => {
       decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     } catch (jwtError) {
       console.error("JWT verification failed:", jwtError.message);
-      return res.status(401).json({ 
-        success: false, 
-        error: "Invalid refresh token - please login again" 
+      return res.status(401).json({
+        success: false,
+        error: "Invalid refresh token - please login again",
       });
     }
 
     const user = await User.findById(decoded._id).select("-password");
 
     if (!user) {
-      return res.status(401).json({ 
-        success: false, 
-        error: "User not found - please login again" 
+      return res.status(401).json({
+        success: false,
+        error: "User not found - please login again",
       });
     }
 
@@ -225,10 +224,10 @@ export const refreshAccessToken = async (req, res) => {
       // Clear the invalid refresh token from database
       user.refreshToken = undefined;
       await user.save({ validateBeforeSave: false });
-      
-      return res.status(401).json({ 
-        success: false, 
-        error: "Invalid refresh token - please login again" 
+
+      return res.status(401).json({
+        success: false,
+        error: "Invalid refresh token - please login again",
       });
     }
 
@@ -245,21 +244,21 @@ export const refreshAccessToken = async (req, res) => {
       .status(200)
       .cookie("accessToken", accessToken, options)
       .cookie("refreshToken", newRefreshToken, options)
-      .json({ 
-        success: true, 
+      .json({
+        success: true,
         message: "Tokens refreshed successfully",
         user: {
           _id: user._id,
           username: user.username,
           email: user.email,
-          role: user.role
-        }
+          role: user.role,
+        },
       });
   } catch (error) {
     console.error("Error refreshing access token:", error.message);
-    return res.status(500).json({ 
-      success: false, 
-      error: "Internal server error" 
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
     });
   }
 };

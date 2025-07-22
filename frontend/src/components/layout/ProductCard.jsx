@@ -6,6 +6,12 @@ import { Link } from "react-router-dom";
 export function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
 
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("clicked");
+    // Add your cart logic here
+  };
   return (
     <Link to={`/product/${product._id}`}>
       <Card
@@ -48,7 +54,12 @@ export function ProductCard({ product }) {
               </span>
             </div>
 
-            <Button variant="outline" size="sm" className="border-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-2"
+              onClick={handleAddToCart}
+            >
               Add to Cart
             </Button>
           </div>

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useProductStore } from "@/store/product/useProductStore";
+import { useProductAPIs } from "@/store/product/useProductAPIs";
 import { ProductCard } from "@/components/layout/ProductCard";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ShoppingBag } from "lucide-react";
@@ -8,7 +8,7 @@ import { ArrowLeft, ShoppingBag } from "lucide-react";
 export default function CategoryProducts() {
   const { category } = useParams();
   const { categoryProducts, isLoading, getProductsByCategory } =
-    useProductStore();
+    useProductAPIs();
 
   useEffect(() => {
     if (category) {
