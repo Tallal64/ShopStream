@@ -139,8 +139,7 @@ export const useAuthStore = create((set) => ({
           responseData.message || "Access token refreshed successfully"
         );
       } else {
-        toast.error(responseData.error || "Failed to refresh access token");
-        console.error(responseData.error || "Failed to refresh access token");
+        console.warn(responseData.error || "Failed to refresh access token");
       }
       return responseData;
     } catch (error) {

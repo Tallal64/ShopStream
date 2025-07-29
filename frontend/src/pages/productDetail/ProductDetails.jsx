@@ -1,8 +1,8 @@
+import AddToCartBtn from "@/components/layout/cart/AddToCartBtn";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useProductAPIs } from "@/store/product/useProductAPIs";
 import {
-  ShoppingCart,
   Heart,
   Share2,
   ArrowLeft,
@@ -12,10 +12,10 @@ import {
   Truck,
   RotateCcw,
 } from "lucide-react";
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-export function ProductDetails({ onBack, onAddToCart }) {
+export function ProductDetails({ onBack }) {
   const navigate = useNavigate();
   const { getProductById, isLoading } = useProductAPIs();
   const { _id } = useParams();
@@ -36,8 +36,8 @@ export function ProductDetails({ onBack, onAddToCart }) {
     fetchProduct();
   }, [_id, getProductById]);
 
-  const handleQuantityChange = (delta) => {
-    setQuantity(Math.max(1, quantity + delta));
+  const handleQuantityChange = () => {
+    setQuantity(1);
   };
 
   const handleBack = () => {
@@ -45,12 +45,6 @@ export function ProductDetails({ onBack, onAddToCart }) {
       onBack();
     } else {
       navigate(-1);
-    }
-  };
-
-  const handleAddToCart = () => {
-    if (onAddToCart && product) {
-      onAddToCart(product._id, quantity);
     }
   };
 
@@ -210,13 +204,15 @@ export function ProductDetails({ onBack, onAddToCart }) {
               </div>
 
               <div className="flex gap-4">
-                <Button
-                  // onClick={() => onAddToCart(product.id, quantity)}
-                  className="flex-1 h-14 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  <ShoppingCart className="w-6 h-6 mr-3" />
-                  Add to Cart
-                </Button>
+                <AddToCartBtn
+                  product={product}
+                  quantity={quantity}
+                  icon={true}
+                  size={"lg"}
+                  className={
+                    "flex-1 h-14 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  }
+                />
                 <Button
                   variant="outline"
                   className="h-14 px-8 rounded-xl transition-all duration-300"

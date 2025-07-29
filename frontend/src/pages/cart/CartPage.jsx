@@ -1,5 +1,4 @@
-import { Cart } from "@/components/layout/Cart";
-import React from "react";
+import { Cart } from "@/components/layout/cart/Cart";
 
 export default function CartPage() {
   return (

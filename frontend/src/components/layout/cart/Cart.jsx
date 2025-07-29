@@ -1,53 +1,74 @@
-import { Button } from "../ui/button";
-import { Card } from "../ui/card";
-import { Badge } from "../ui/badge";
-import { Separator } from "../ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { useAuthStore } from "@/store/auth/useAuthStore";
+import { useProductStore } from "@/store/product/useProductStore";
 import {
   Plus,
   Minus,
   Trash2,
-  ShoppingBag,
   CreditCard,
   Truck,
+  ShoppingBag,
 } from "lucide-react";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export function Cart() {
-  // Static sample cart items for UI display
-  const sampleItems = [
-    {
-      id: "1",
-      title: "Wireless Bluetooth Headphones with Noise Cancellation",
-      price: 159.99,
-      image:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
-      category: "Electronics",
-      quantity: 2,
-    },
-    {
-      id: "2",
-      title: "Premium Leather Backpack for Travel",
-      price: 89.99,
-      image:
-        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop",
-      category: "Fashion",
-      quantity: 1,
-    },
-    {
-      id: "3",
-      title: "Smart Fitness Watch with Heart Rate Monitor",
-      price: 249.99,
-      image:
-        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",
-      category: "Technology",
-      quantity: 1,
-    },
-  ];
+  const { cart, isLoading, getItemsFromCart } = useProductStore();
+  const { user } = useAuthStore();
+
+  console.log(!isLoading, "Cart loading state");
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      if (!user) {
+        return;
+      }
+      await getItemsFromCart();
+    };
+
+    fetchCartItems();
+  }, [getItemsFromCart, user]);
 
   // Static calculations for UI display
   const subtotal = 659.97;
-  const shipping = 0; // Free shipping
+  // const shipping = 0; // Free shipping
   const tax = 52.8;
   const total = 712.77;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="w-32 h-32 mx-auto mb-4 border-b-2 rounded-full animate-spin border-primary"></div>
+          <p className="text-lg text-muted-foreground">Loading Cart Items...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!cart || !user || cart.length === 0) {
+    return (
+      <div className="text-center py-16">
+        <div className="w-24 h-24 mx-auto mb-6 bg-muted rounded-full flex items-center justify-center">
+          <ShoppingBag className="w-12 h-12 text-muted-foreground" />
+        </div>
+        <h2 className="text-2xl font-semibold text-foreground mb-4">
+          Your cart is empty
+        </h2>
+        <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+          Looks like you haven't added any items to your cart yet. Start
+          shopping to fill it up!
+        </p>
+
+        <Button asChild className="px-8">
+          <Link to="/">Continue Shopping</Link>
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background py-8 px-4">
@@ -58,21 +79,21 @@ export function Cart() {
             Shopping Cart
           </h1>
           <p className="text-muted-foreground">
-            {sampleItems.length} items in your cart
+            {cart?.length} items in your cart
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
-            {sampleItems.map((item) => (
-              <Card key={item.id} className="p-6">
+            {cart?.map((item) => (
+              <Card key={item.product?._id} className="p-6">
                 <div className="flex gap-4">
                   {/* Product Image */}
                   <div className="w-24 h-24 bg-muted rounded-lg overflow-hidden flex-shrink-0">
                     <img
-                      src={item.image}
-                      alt={item.title}
+                      src={item.product?.image}
+                      alt={item.product?.title}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -82,10 +103,10 @@ export function Cart() {
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <Badge variant="secondary" className="text-xs mb-2">
-                          {item.category}
+                          {item.product?.category}
                         </Badge>
                         <h3 className="font-semibold text-foreground line-clamp-2">
-                          {item.title}
+                          {item.product?.title}
                         </h3>
                       </div>
                       <Button
@@ -122,10 +143,10 @@ export function Cart() {
                       {/* Price */}
                       <div className="text-right">
                         <p className="font-semibold text-foreground">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          ${(item.product?.price * item.quantity)?.toFixed(2)}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          ${item.price.toFixed(2)} each
+                          ${item.product?.price?.toFixed(2)} each
                         </p>
                       </div>
                     </div>
@@ -145,7 +166,7 @@ export function Cart() {
               <div className="space-y-3 mb-4">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span className="font-medium">${subtotal.toFixed(2)}</span>
+                  <span className="font-medium">${subtotal?.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Shipping</span>
@@ -153,7 +174,7 @@ export function Cart() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Tax</span>
-                  <span className="font-medium">${tax.toFixed(2)}</span>
+                  <span className="font-medium">${tax?.toFixed(2)}</span>
                 </div>
               </div>
 
@@ -162,7 +183,7 @@ export function Cart() {
               <div className="flex justify-between items-center mb-6">
                 <span className="font-semibold text-foreground">Total</span>
                 <span className="text-xl font-bold text-foreground">
-                  ${total.toFixed(2)}
+                  ${total?.toFixed(2)}
                 </span>
               </div>
 
@@ -200,23 +221,6 @@ export function Cart() {
             </Card>
           </div>
         </div>
-
-        {/* Empty Cart State (commented out for now since we're showing items) */}
-        {/* 
-        <div className="text-center py-16">
-          <div className="w-24 h-24 mx-auto mb-6 bg-muted rounded-full flex items-center justify-center">
-            <ShoppingBag className="w-12 h-12 text-muted-foreground" />
-          </div>
-          <h2 className="text-2xl font-semibold text-foreground mb-4">
-            Your cart is empty
-          </h2>
-          <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-            Looks like you haven't added any items to your cart yet. Start
-            shopping to fill it up!
-          </p>
-          <Button className="px-8">Continue Shopping</Button>
-        </div>
-         */}
       </div>
     </div>
   );

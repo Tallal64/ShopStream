@@ -10,8 +10,8 @@ import { verifyJWT } from "../middleware/auth.middleware.js";
 const router = express.Router();
 
 router.post("/", verifyJWT, addToCart);
+router.get("/", verifyJWT, getUserCart);
 router.put("/:_id", verifyJWT, updateCartItemQuantity);
-router.get("/", verifyJWT, removeItemFromCart);
-router.delete("/:_id", verifyJWT, getUserCart);
+router.delete("/:_id", verifyJWT, removeItemFromCart);
 
 export default router;

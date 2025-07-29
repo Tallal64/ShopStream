@@ -8,7 +8,7 @@ import { useAuthStore } from "./store/auth/useAuthStore";
 import Dashboard from "./pages/dashboard";
 import CategoryProducts from "./pages/category/CategoryProducts";
 import { ProductDetails } from "./pages/productDetail/ProductDetails";
-import { Cart } from "./components/layout/Cart";
+import { Cart } from "./components/layout/cart/Cart";
 
 export default function App() {
   const { user, getCurrentUser, refreshAccessToken, isLoading } =
@@ -22,10 +22,9 @@ export default function App() {
         const response = await refreshAccessToken();
         if (response?.success) {
           console.log("User refreshed successfully:", response.message);
-
           await getCurrentUser();
         } else {
-          console.error("Failed to refresh user in app.jsx:", response.error);
+          console.warn("refreshAccessToken Failed: ", response.error);
         }
       };
       getUser();

@@ -55,6 +55,35 @@ export const addToCart = async (req, res) => {
   }
 };
 
+export const getUserCart = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid user ID" });
+    }
+
+    const cart = await Cart.findOne({ user: userId })
+      .populate("items.product")
+      .lean();
+
+    if (!cart) {
+      return res.status(404).json({ error: "Cart not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Cart retrieved successfully",
+      data: cart, 
+    });
+  } catch (error) {
+    console.error("Server error:", error);
+    return res
+      .status(500)
+      .json({ error: "Something went wrong while retrieving cart" });
+  }
+};
+
 export const updateCartItemQuantity = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -157,32 +186,5 @@ export const removeItemFromCart = async (req, res) => {
     return res
       .status(500)
       .json({ error: "Something went wrong while updating cart" });
-  }
-};
-
-export const getUserCart = async (req, res) => {
-  try {
-    const userId = req.user._id;
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ error: "Invalid user ID" });
-    }
-
-    const cart = await Cart.findOne({ user: userId }).lean();
-
-    if (!cart) {
-      return res.status(404).json({ error: "Cart not found" });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Cart retrieved successfully",
-      data: cart,
-    });
-  } catch (error) {
-    console.error("Server error:", error);
-    return res
-      .status(500)
-      .json({ error: "Something went wrong while retrieving cart" });
   }
 };

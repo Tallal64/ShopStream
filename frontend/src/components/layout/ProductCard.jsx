@@ -1,17 +1,11 @@
 import { useState } from "react";
 import { Card } from "../ui/card";
-import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
+import AddToCartBtn from "./cart/AddToCartBtn";
 
 export function ProductCard({ product }) {
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleAddToCart = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("clicked");
-    // Add your cart logic here
-  };
   return (
     <Link to={`/product/${product._id}`}>
       <Card
@@ -54,14 +48,13 @@ export function ProductCard({ product }) {
               </span>
             </div>
 
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-2"
-              onClick={handleAddToCart}
-            >
-              Add to Cart
-            </Button>
+            <AddToCartBtn
+              product={product}
+              icon={false}
+              size={"sm"}
+              variant={"outline"}
+              className={""}
+            />
           </div>
         </div>
 

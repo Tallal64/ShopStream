@@ -22,6 +22,7 @@ export default function CategoryProducts() {
     : "";
 
   if (isLoading) {
+    // replace with loading skeleton or spinner
     return (
       <div className="min-h-screen bg-background">
         <div className="px-4 py-16">
