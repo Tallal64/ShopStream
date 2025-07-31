@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/auth/useAuthStore";
 import { useProductStore } from "@/store/product/useProductStore";
 import { ShoppingCart } from "lucide-react";
-import React from "react";
 import toast from "react-hot-toast";
 
 export default function AddToCartBtn({
@@ -14,7 +13,7 @@ export default function AddToCartBtn({
   className,
   ...restProps
 }) {
-  const { addToCart } = useProductStore();
+  const { addToCart, getItemsFromCart } = useProductStore();
   const { user } = useAuthStore();
 
   const handleAddToCart = async (e) => {
@@ -28,7 +27,7 @@ export default function AddToCartBtn({
 
     const response = await addToCart(product?._id, quantity);
     if (response.success) {
-      toast.success(response.message || "Item added to cart");
+      await getItemsFromCart();
     } else {
       toast.error(response.error || "Failed to add item to cart");
     }

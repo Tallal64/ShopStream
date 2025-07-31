@@ -19,9 +19,7 @@ export const useProductStore = create((set) => ({
 
       const responseData = await response.json();
       if (responseData.success) {
-        set((state) => ({
-          cart: [...state.cart, { productId, quantity }],
-        }));
+        toast.success(response.message || "Item added to cart");
       } else {
         toast.error(responseData.error || "Failed to add to cart");
       }
@@ -57,5 +55,63 @@ export const useProductStore = create((set) => ({
     }
   },
 
-  // TODO: make these two => updateCartItemQuantity, removeItemFromCart
+  removeItemFromCart: async (productId) => {
+    try {
+      set({ isLoading: true });
+      const response = await fetch(`/api/cart/${productId}`, {
+        credentials: "include",
+        method: "DELETE",
+      });
+
+      const responseData = await response.json();
+      if (responseData.success) {
+        set((state) => ({
+          cart: state.cart.filter((item) => item._id !== productId),
+        }));
+        toast.success("Item removed from cart");
+      } else {
+        toast.error(responseData.error || "Failed to remove item from cart");
+      }
+      return responseData;
+    } catch (error) {
+      console.error("Error removing item from cart:", error);
+      toast.error("Failed to remove item from cart: Network error");
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  updateQuantity: async (productId, newQuantity) => {
+    try {
+      set({ isLoading: true });
+      const response = await fetch(`/api/cart/${productId}`, {
+        credentials: "include",
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ newQuantity }),
+      });
+
+      const responseData = await response.json();
+      if (responseData.success) {
+        set((state) => ({
+          cart: state.cart.map((item) =>
+            item._id === productId ? { ...item, quantity: newQuantity } : item
+          ),
+        }));
+        toast.success("Cart item quantity updated successfully");
+      } else {
+        toast.error(
+          responseData.error || "Failed to update cart item quantity"
+        );
+      }
+      return responseData;
+    } catch (error) {
+      console.error("Error updating cart item quantity:", error);
+      toast.error("Failed to update cart item quantity: Network error");
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 }));

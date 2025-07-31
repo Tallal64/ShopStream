@@ -1,4 +1,5 @@
 import { useAuthStore } from "@/store/auth/useAuthStore";
+import { useProductStore } from "@/store/product/useProductStore";
 import { useTheme } from "@/store/theme";
 import {
   LayoutDashboard,
@@ -9,17 +10,31 @@ import {
   Sun,
   UserRoundPlus,
 } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 
 export default function Header() {
   const { user, logout } = useAuthStore();
+  const { cart, getItemsFromCart } = useProductStore();
   const { isDarkMode, setTheme } = useTheme();
 
   // Check if the user is an admin
   const isAdmin = user?.role === "admin";
+
+  const cartItemCount = cart?.reduce((total, item) => total + (item.quantity || 0), 0) || 0;
+
+  // Fetch cart items when user is available
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      if (user) {
+        await getItemsFromCart();
+      }
+    };
+
+    fetchCartItems();
+  }, [user, getItemsFromCart]);
 
   const handleClick = () => {
     setTheme();
@@ -67,9 +82,11 @@ export default function Header() {
             <Link to="/cart">
               <ShoppingCart className="w-5 h-5" />
               <span className="hidden sm:inline">Cart</span>
-              <Badge className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs">
-                {1}
-              </Badge>
+              {cartItemCount > 0 && (
+                <Badge className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs">
+                  {cartItemCount}
+                </Badge>
+              )}
             </Link>
           </Button>
 

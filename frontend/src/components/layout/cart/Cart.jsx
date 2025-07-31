@@ -14,29 +14,38 @@ import {
 } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import { UpdateCartQuantityBtn } from "./UpdateCartQuantityBtn";
 export function Cart() {
-  const { cart, isLoading, getItemsFromCart } = useProductStore();
+  const { cart, isLoading, getItemsFromCart, removeItemFromCart } =
+    useProductStore();
   const { user } = useAuthStore();
-
-  console.log(!isLoading, "Cart loading state");
 
   useEffect(() => {
     const fetchCartItems = async () => {
-      if (!user) {
-        return;
-      }
+      if (!user) return;
       await getItemsFromCart();
     };
-
     fetchCartItems();
   }, [getItemsFromCart, user]);
 
-  // Static calculations for UI display
-  const subtotal = 659.97;
-  // const shipping = 0; // Free shipping
-  const tax = 52.8;
-  const total = 712.77;
+  const handleRemoveItem = async (productId) => {
+    if (!user) return;
+    const response = await removeItemFromCart(productId);
+    if (response.success) {
+      await getItemsFromCart();
+    } else {
+      console.error("Failed to remove item from cart:", response.error);
+    }
+  };
+
+  // ✅ Dynamic calculations
+  const subtotal =
+    cart?.reduce((acc, item) => {
+      return acc + item.product?.price * item.quantity;
+    }, 0) || 0;
+
+  const tax = subtotal * 0.08; // 8% tax
+  const total = subtotal + tax;
 
   if (isLoading) {
     return (
@@ -51,18 +60,17 @@ export function Cart() {
 
   if (!cart || !user || cart.length === 0) {
     return (
-      <div className="text-center py-16">
-        <div className="w-24 h-24 mx-auto mb-6 bg-muted rounded-full flex items-center justify-center">
+      <div className="py-16 text-center">
+        <div className="flex items-center justify-center w-24 h-24 mx-auto mb-6 rounded-full bg-muted">
           <ShoppingBag className="w-12 h-12 text-muted-foreground" />
         </div>
-        <h2 className="text-2xl font-semibold text-foreground mb-4">
+        <h2 className="mb-4 text-2xl font-semibold text-foreground">
           Your cart is empty
         </h2>
-        <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+        <p className="max-w-md mx-auto mb-8 text-muted-foreground">
           Looks like you haven't added any items to your cart yet. Start
           shopping to fill it up!
         </p>
-
         <Button asChild className="px-8">
           <Link to="/">Continue Shopping</Link>
         </Button>
@@ -71,38 +79,33 @@ export function Cart() {
   }
 
   return (
-    <div className="min-h-screen bg-background py-8 px-4">
+    <div className="min-h-screen px-4 py-8 bg-background">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">
+          <h1 className="mb-2 text-3xl font-bold text-foreground">
             Shopping Cart
           </h1>
           <p className="text-muted-foreground">
-            {cart?.length} items in your cart
+            {cart?.length} item(s) in your cart
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Cart Items */}
-          <div className="lg:col-span-2 space-y-4">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <div className="space-y-4 lg:col-span-2">
             {cart?.map((item) => (
               <Card key={item.product?._id} className="p-6">
                 <div className="flex gap-4">
-                  {/* Product Image */}
-                  <div className="w-24 h-24 bg-muted rounded-lg overflow-hidden flex-shrink-0">
+                  <div className="flex-shrink-0 w-24 h-24 overflow-hidden rounded-lg bg-muted">
                     <img
                       src={item.product?.image}
                       alt={item.product?.title}
-                      className="w-full h-full object-cover"
+                      className="object-cover w-full h-full"
                     />
                   </div>
-
-                  {/* Product Details */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-start mb-2">
+                    <div className="flex items-start justify-between mb-2">
                       <div>
-                        <Badge variant="secondary" className="text-xs mb-2">
+                        <Badge variant="secondary" className="mb-2 text-xs">
                           {item.product?.category}
                         </Badge>
                         <h3 className="font-semibold text-foreground line-clamp-2">
@@ -112,35 +115,29 @@ export function Cart() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="text-muted-foreground hover:text-destructive flex-shrink-0"
+                        className="flex-shrink-0 text-muted-foreground hover:text-destructive"
+                        onClick={() => handleRemoveItem(item.product?._id)}
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
 
-                    <div className="flex justify-between items-center">
-                      {/* Quantity Controls */}
+                    <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-8 w-8"
-                        >
-                          <Minus className="w-3 h-3" />
-                        </Button>
-                        <span className="w-8 text-center font-medium">
+                        <UpdateCartQuantityBtn
+                          productId={item.product?._id}
+                          newQuantity={item.quantity - 1}
+                          icon={<Minus className="w-3 h-3" />}
+                        />
+                        <span className="w-8 font-medium text-center">
                           {item.quantity}
                         </span>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-8 w-8"
-                        >
-                          <Plus className="w-3 h-3" />
-                        </Button>
+                        <UpdateCartQuantityBtn
+                          productId={item.product?._id}
+                          newQuantity={item.quantity + 1}
+                          icon={<Plus className="w-3 h-3" />}
+                        />
                       </div>
-
-                      {/* Price */}
                       <div className="text-right">
                         <p className="font-semibold text-foreground">
                           ${(item.product?.price * item.quantity)?.toFixed(2)}
@@ -156,39 +153,37 @@ export function Cart() {
             ))}
           </div>
 
-          {/* Order Summary */}
           <div className="lg:col-span-1">
-            <Card className="p-6 sticky top-24">
-              <h3 className="font-semibold text-foreground mb-4">
+            <Card className="sticky p-6 top-24">
+              <h3 className="mb-4 font-semibold text-foreground">
                 Order Summary
               </h3>
 
-              <div className="space-y-3 mb-4">
+              <div className="mb-4 space-y-3">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span className="font-medium">${subtotal?.toFixed(2)}</span>
+                  <span className="font-medium">${subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Shipping</span>
                   <span className="font-medium">Free</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Tax</span>
-                  <span className="font-medium">${tax?.toFixed(2)}</span>
+                  <span className="text-muted-foreground">Tax (8%)</span>
+                  <span className="font-medium">${tax.toFixed(2)}</span>
                 </div>
               </div>
 
               <Separator className="my-4" />
 
-              <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center justify-between mb-6">
                 <span className="font-semibold text-foreground">Total</span>
                 <span className="text-xl font-bold text-foreground">
-                  ${total?.toFixed(2)}
+                  ${total.toFixed(2)}
                 </span>
               </div>
 
-              {/* Free Shipping Notice */}
-              <div className="bg-green-50 dark:bg-green-950/20 p-3 rounded-lg mb-4 border">
+              <div className="p-3 mb-4 border rounded-lg bg-green-50 dark:bg-green-950/20">
                 <div className="flex items-center gap-2 text-sm">
                   <Truck className="w-4 h-4 text-green-600" />
                   <span className="text-green-800 dark:text-green-400">
@@ -202,13 +197,12 @@ export function Cart() {
                   <CreditCard className="w-5 h-5 mr-2" />
                   Proceed to Checkout
                 </Button>
-                <Button variant="outline" className="w-full">
-                  Continue Shopping
+                <Button asChild variant="outline" className="w-full">
+                  <Link to="/">Continue Shopping</Link>
                 </Button>
               </div>
 
-              {/* Security Features */}
-              <div className="mt-6 pt-4 border-t space-y-2">
+              <div className="pt-4 mt-6 space-y-2 border-t">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   <span>Secure 256-bit SSL encryption</span>

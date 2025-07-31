@@ -71,10 +71,32 @@ export const getUserCart = async (req, res) => {
       return res.status(404).json({ error: "Cart not found" });
     }
 
+    const TAX_RATE = 0.08; // 8% tax
+    const SHIPPING_FEE = 0; // Flat rate (can be customized later)
+
+    let subtotal = 0;
+
+    cart.items.forEach((item) => {
+      if (item.product && item.product.price) {
+        subtotal += item.product.price * item.quantity;
+      }
+    });
+
+    const tax = +(subtotal * TAX_RATE).toFixed(2);
+    const total = +(subtotal + tax + SHIPPING_FEE).toFixed(2);
+
     return res.status(200).json({
       success: true,
       message: "Cart retrieved successfully",
-      data: cart, 
+      data: {
+        ...cart,
+        pricingSummary: {
+          subtotal,
+          tax,
+          shipping: SHIPPING_FEE,
+          total,
+        },
+      },
     });
   } catch (error) {
     console.error("Server error:", error);
@@ -87,7 +109,7 @@ export const getUserCart = async (req, res) => {
 export const updateCartItemQuantity = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { productId } = req.params;
+    const { _id: productId } = req.params;
     const { newQuantity } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -145,7 +167,7 @@ export const updateCartItemQuantity = async (req, res) => {
 export const removeItemFromCart = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { productId } = req.params;
+    const { _id: productId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       return res.status(400).json({ error: "Invalid product ID" });

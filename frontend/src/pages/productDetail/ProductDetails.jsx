@@ -78,8 +78,8 @@ export function ProductDetails({ onBack }) {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-card/80 backdrop-blur-sm border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+      <div className="sticky top-0 z-10 border-b bg-card/80 backdrop-blur-sm">
+        <div className="px-4 py-4 mx-auto max-w-7xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button
@@ -102,19 +102,19 @@ export function ProductDetails({ onBack }) {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+      <div className="px-4 py-12 mx-auto max-w-7xl">
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
           {/* Product Image */}
           <div className="relative">
-            <div className="relative aspect-square bg-card rounded-3xl overflow-hidden shadow-lg group border">
+            <div className="relative overflow-hidden border shadow-lg aspect-square bg-card rounded-3xl group">
               <img
                 src={product.image}
                 alt={product.title}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
               />
 
               {/* Badges */}
-              <div className="absolute top-6 left-6 flex flex-col gap-3">
+              <div className="absolute flex flex-col gap-3 top-6 left-6">
                 {product.isNew && (
                   <Badge className="shadow-lg">New Arrival</Badge>
                 )}
@@ -140,18 +140,18 @@ export function ProductDetails({ onBack }) {
             <div className="flex items-center gap-3">
               <Badge
                 variant="secondary"
-                className="text-sm py-2 px-4 capitalize"
+                className="px-4 py-2 text-sm capitalize"
               >
                 {product.category}
               </Badge>
               {product.inStock !== false && (
-                <Badge className="text-sm py-2 px-4">In Stock</Badge>
+                <Badge className="px-4 py-2 text-sm">In Stock</Badge>
               )}
             </div>
 
             {/* Title */}
             <div>
-              <h1 className="text-4xl font-bold text-foreground leading-tight mb-4 capitalize">
+              <h1 className="mb-4 text-4xl font-bold leading-tight capitalize text-foreground">
                 {product.title}
               </h1>
             </div>
@@ -169,8 +169,8 @@ export function ProductDetails({ onBack }) {
             </div>
 
             {/* Description */}
-            <div className="bg-muted rounded-2xl p-6">
-              <p className="text-muted-foreground leading-relaxed text-lg">
+            <div className="p-6 bg-muted rounded-2xl">
+              <p className="text-lg leading-relaxed text-muted-foreground">
                 {product.description}
               </p>
             </div>
@@ -178,14 +178,14 @@ export function ProductDetails({ onBack }) {
             {/* Quantity & Add to Cart */}
             <div className="space-y-6">
               <div className="flex items-center gap-6">
-                <span className="font-semibold text-lg">Quantity:</span>
-                <div className="flex items-center bg-card border rounded-xl shadow-sm">
+                <span className="text-lg font-semibold">Quantity:</span>
+                <div className="flex items-center border shadow-sm bg-card rounded-xl">
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => handleQuantityChange(-1)}
                     disabled={quantity <= 1}
-                    className="h-12 w-12"
+                    className="w-12 h-12"
                   >
                     <Minus className="w-5 h-5" />
                   </Button>
@@ -196,7 +196,7 @@ export function ProductDetails({ onBack }) {
                     variant="ghost"
                     size="icon"
                     onClick={() => handleQuantityChange(1)}
-                    className="h-12 w-12"
+                    className="w-12 h-12"
                   >
                     <Plus className="w-5 h-5" />
                   </Button>
@@ -215,7 +215,7 @@ export function ProductDetails({ onBack }) {
                 />
                 <Button
                   variant="outline"
-                  className="h-14 px-8 rounded-xl transition-all duration-300"
+                  className="px-8 transition-all duration-300 h-14 rounded-xl"
                 >
                   Buy Now
                 </Button>
@@ -223,9 +223,9 @@ export function ProductDetails({ onBack }) {
             </div>
 
             {/* Features */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8 border-t">
-              <div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-950/20 rounded-xl border">
-                <Truck className="w-6 h-6 text-green-600 flex-shrink-0" />
+            <div className="grid grid-cols-1 gap-6 pt-8 border-t sm:grid-cols-3">
+              <div className="flex items-center gap-3 p-4 border bg-green-50 dark:bg-green-950/20 rounded-xl">
+                <Truck className="flex-shrink-0 w-6 h-6 text-green-600" />
                 <div>
                   <p className="font-semibold text-green-800 dark:text-green-400">
                     Free Shipping
@@ -235,8 +235,8 @@ export function ProductDetails({ onBack }) {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-4 bg-blue-50 dark:bg-blue-950/20 rounded-xl border">
-                <RotateCcw className="w-6 h-6 text-blue-600 flex-shrink-0" />
+              <div className="flex items-center gap-3 p-4 border bg-blue-50 dark:bg-blue-950/20 rounded-xl">
+                <RotateCcw className="flex-shrink-0 w-6 h-6 text-blue-600" />
                 <div>
                   <p className="font-semibold text-blue-800 dark:text-blue-400">
                     Easy Returns
@@ -246,8 +246,8 @@ export function ProductDetails({ onBack }) {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-4 bg-purple-50 dark:bg-purple-950/20 rounded-xl border">
-                <Shield className="w-6 h-6 text-purple-600 flex-shrink-0" />
+              <div className="flex items-center gap-3 p-4 border bg-purple-50 dark:bg-purple-950/20 rounded-xl">
+                <Shield className="flex-shrink-0 w-6 h-6 text-purple-600" />
                 <div>
                   <p className="font-semibold text-purple-800 dark:text-purple-400">
                     Warranty
