@@ -38,5 +38,3 @@ jspm_packages/
 # Build directories
 dist/
 build/
-tmp/
-temp/

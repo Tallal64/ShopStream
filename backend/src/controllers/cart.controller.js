@@ -85,6 +85,17 @@ export const getUserCart = async (req, res) => {
     const tax = +(subtotal * TAX_RATE).toFixed(2);
     const total = +(subtotal + tax + SHIPPING_FEE).toFixed(2);
 
+    const allProductsDeleted = cart.items.every(
+      (item) => !item.product || !item.product._id
+    );
+
+    if (allProductsDeleted || cart.items.length === 0) {
+      await Cart.findByIdAndDelete(cart._id);
+      return res
+        .status(200)
+        .json({ success: true, message: "Cart is empty", data: null });
+    }
+
     return res.status(200).json({
       success: true,
       message: "Cart retrieved successfully",
@@ -207,6 +218,6 @@ export const removeItemFromCart = async (req, res) => {
     console.error("Server error:", error);
     return res
       .status(500)
-      .json({ error: "Something went wrong while updating cart" });
+      .json({ error: "Something went wrong while deleting the item" });
   }
 };

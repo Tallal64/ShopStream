@@ -51,6 +51,7 @@ export default function CreateProductForm() {
     });
   };
 
+  // TODO: make animation for form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
@@ -64,7 +65,7 @@ export default function CreateProductForm() {
     }
 
     resetForm();
-    navigate("/"); // Navigate after successful submission
+    navigate("/"); 
   };
 
   return (

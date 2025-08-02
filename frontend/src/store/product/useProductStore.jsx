@@ -63,19 +63,24 @@ export const useProductStore = create((set) => ({
         method: "DELETE",
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const responseData = await response.json();
-      if (responseData.success) {
+      if (responseData && responseData.success) {
         set((state) => ({
-          cart: state.cart.filter((item) => item._id !== productId),
+          cart: state.cart.filter((item) => item.product?._id !== productId),
         }));
         toast.success("Item removed from cart");
       } else {
-        toast.error(responseData.error || "Failed to remove item from cart");
+        toast.error(responseData?.error || "Failed to remove item from cart");
       }
       return responseData;
     } catch (error) {
       console.error("Error removing item from cart:", error);
       toast.error("Failed to remove item from cart: Network error");
+      return null;
     } finally {
       set({ isLoading: false });
     }
@@ -97,7 +102,7 @@ export const useProductStore = create((set) => ({
       if (responseData.success) {
         set((state) => ({
           cart: state.cart.map((item) =>
-            item._id === productId ? { ...item, quantity: newQuantity } : item
+            item.product?._id === productId ? { ...item, quantity: newQuantity } : item
           ),
         }));
         toast.success("Cart item quantity updated successfully");
