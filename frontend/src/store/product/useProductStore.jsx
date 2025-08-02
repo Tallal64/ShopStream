@@ -41,8 +41,8 @@ export const useProductStore = create((set) => ({
       });
 
       const responseData = await response.json();
-      if (responseData.success) {
-        set({ cart: responseData.data.items });
+      if (responseData && responseData.success) {
+        set({ cart: responseData.data?.items });
       } else {
         console.warn(responseData.error || "Failed to fetch cart items");
       }
@@ -102,7 +102,9 @@ export const useProductStore = create((set) => ({
       if (responseData.success) {
         set((state) => ({
           cart: state.cart.map((item) =>
-            item.product?._id === productId ? { ...item, quantity: newQuantity } : item
+            item.product?._id === productId
+              ? { ...item, quantity: newQuantity }
+              : item
           ),
         }));
         toast.success("Cart item quantity updated successfully");

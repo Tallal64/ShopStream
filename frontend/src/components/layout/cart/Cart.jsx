@@ -36,7 +36,10 @@ export function Cart() {
     if (response && response.success) {
       await getItemsFromCart();
     } else {
-      console.error("Failed to remove item from cart:", response?.error || "Unknown error");
+      console.error(
+        "Failed to remove item from cart:",
+        response?.error || "Unknown error"
+      );
     }
   };
 
@@ -63,7 +66,11 @@ export function Cart() {
     );
   }
 
-  if (!cart || !user || cart.filter(item => item.product !== null).length === 0) {
+  if (
+    !cart ||
+    !user ||
+    cart.filter((item) => item.product !== null).length === 0
+  ) {
     return (
       <div className="py-16 text-center">
         <div className="flex items-center justify-center w-24 h-24 mx-auto mb-6 rounded-full bg-muted">
@@ -91,77 +98,85 @@ export function Cart() {
             Shopping Cart
           </h1>
           <p className="text-muted-foreground">
-            {cart?.filter(item => item.product !== null).length || 0} item(s) in your cart
+            {cart?.filter((item) => item.product !== null).length || 0} item(s)
+            in your cart
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div className="space-y-4 lg:col-span-2">
-            {cart?.filter(item => item.product !== null).map(
-              (item) =>
-                item?.product && (
-                  <Card key={item.product?._id} className="p-6">
-                    <div className="flex gap-4">
-                      <div className="flex-shrink-0 w-24 h-24 overflow-hidden rounded-lg bg-muted">
-                        <img
-                          src={item.product?.image}
-                          alt={item.product?.title}
-                          className="object-cover w-full h-full"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between mb-2">
-                          <div>
-                            <Badge variant="secondary" className="mb-2 text-xs">
-                              {item.product?.category}
-                            </Badge>
-                            <h3 className="font-semibold text-foreground line-clamp-2">
-                              {item.product?.title}
-                            </h3>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="flex-shrink-0 text-muted-foreground hover:text-destructive"
-                            onClick={() => handleRemoveItem(item.product?._id)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
+            {cart
+              ?.filter((item) => item.product !== null)
+              .map(
+                (item) =>
+                  item?.product && (
+                    <Card key={item.product?._id} className="p-6">
+                      <div className="flex gap-4">
+                        <div className="flex-shrink-0 w-24 h-24 overflow-hidden rounded-lg bg-muted">
+                          <img
+                            src={item.product?.image}
+                            alt={item.product?.title}
+                            className="object-cover w-full h-full"
+                          />
                         </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between mb-2">
+                            <div>
+                              <Badge
+                                variant="secondary"
+                                className="mb-2 text-xs"
+                              >
+                                {item.product?.category}
+                              </Badge>
+                              <h3 className="font-semibold text-foreground line-clamp-2">
+                                {item.product?.title}
+                              </h3>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="flex-shrink-0 text-muted-foreground hover:text-destructive"
+                              onClick={() =>
+                                handleRemoveItem(item.product?._id)
+                              }
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
 
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <UpdateCartQuantityBtn
-                              productId={item.product?._id}
-                              newQuantity={item.quantity - 1}
-                              icon={<Minus className="w-3 h-3" />}
-                            />
-                            <span className="w-8 font-medium text-center">
-                              {item.quantity}
-                            </span>
-                            <UpdateCartQuantityBtn
-                              productId={item.product?._id}
-                              newQuantity={item.quantity + 1}
-                              icon={<Plus className="w-3 h-3" />}
-                            />
-                          </div>
-                          <div className="text-right">
-                            <p className="font-semibold text-foreground">
-                              $
-                              {(item.product?.price * item.quantity)?.toFixed(
-                                2
-                              )}
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              ${item.product?.price?.toFixed(2)} each
-                            </p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <UpdateCartQuantityBtn
+                                productId={item.product?._id}
+                                newQuantity={item.quantity - 1}
+                                icon={<Minus className="w-3 h-3" />}
+                              />
+                              <span className="w-8 font-medium text-center">
+                                {item.quantity}
+                              </span>
+                              <UpdateCartQuantityBtn
+                                productId={item.product?._id}
+                                newQuantity={item.quantity + 1}
+                                icon={<Plus className="w-3 h-3" />}
+                              />
+                            </div>
+                            <div className="text-right">
+                              <p className="font-semibold text-foreground">
+                                $
+                                {(item.product?.price * item.quantity)?.toFixed(
+                                  2
+                                )}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                ${item.product?.price?.toFixed(2)} each
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </Card>
-                )
-            )}
+                    </Card>
+                  )
+              )}
           </div>
 
           <div className="lg:col-span-1">
