@@ -11,12 +11,13 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useProductAPIs } from "@/store/product/useProductAPIs";
-import { Upload } from "lucide-react";
+import { Loader2Icon, Upload } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function CreateProductForm() {
   const navigate = useNavigate();
+  const [createProductBtn, setCreateProductBtn] = useState(false);
   const { createProduct } = useProductAPIs();
   const [formData, setFormData] = useState({
     title: "",
@@ -54,7 +55,7 @@ export default function CreateProductForm() {
   // TODO: make animation for form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    setCreateProductBtn(true);
     const response = await createProduct(formData);
 
     console.log("Product creation response:", response);
@@ -65,7 +66,7 @@ export default function CreateProductForm() {
     }
 
     resetForm();
-    navigate("/"); 
+    navigate("/");
   };
 
   return (
@@ -180,9 +181,16 @@ export default function CreateProductForm() {
 
               {/* Submit Button */}
               <div className="flex gap-4 pt-4">
-                <Button type="submit" className="flex-1">
-                  Create Product
-                </Button>
+                {createProductBtn ? (
+                  <Button disabled className="flex-1">
+                    <Loader2Icon className="animate-spin" />
+                    Please Wait...
+                  </Button>
+                ) : (
+                  <Button type="submit" className="flex-1">
+                    Create Product
+                  </Button>
+                )}
                 <Button
                   type="button"
                   variant="outline"

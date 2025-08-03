@@ -28,8 +28,6 @@ export function Cart() {
     fetchCartItems();
   }, [getItemsFromCart, user]);
 
-  console.log("Cart items:", cart);
-
   const handleRemoveItem = async (productId) => {
     if (!user) return;
     const response = await removeItemFromCart(productId);
@@ -43,7 +41,7 @@ export function Cart() {
     }
   };
 
-  // ✅ Dynamic calculations
+  // Dynamic calculations
   const subtotal =
     cart?.reduce((acc, item) => {
       if (item.product && item.product.price) {
@@ -98,7 +96,10 @@ export function Cart() {
             Shopping Cart
           </h1>
           <p className="text-muted-foreground">
-            {cart?.filter((item) => item.product !== null).length || 0} item(s)
+            {cart?.filter((item) => item.product !== null).length || 0}
+            {cart?.filter((item) => item.product !== null).length == 1
+              ? " item "
+              : " items "}
             in your cart
           </p>
         </div>
