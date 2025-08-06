@@ -2,27 +2,23 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import path from "path";
-import { fileURLToPath } from "url";
 
 const app = express();
 
-// __dirname workaround in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.resolve();
 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // accept data from user/frontend
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 app.use(cookieParser());
-
-// CORS
 const corsOptions = {
-  origin: process.env.CLIENT_URL || "http://localhost:3000",
-  credentials: true,
+  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  credentials: true, // allow cookies to be sent
 };
 app.use(cors(corsOptions));
 
-// Routes
+export default app;
+
+// importing routes
 import productRoutes from "./routes/product.route.js";
 import userRoutes from "./routes/user.route.js";
 import cartRoutes from "./routes/cart.route.js";
@@ -31,11 +27,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/cart", cartRoutes);
 
-// Serve static files from frontend/dist
-app.use(express.static(path.join(__dirname, "frontend", "dist")));
-
+app.use(express.static(path.join(__dirname, "/frontend/dist")));
 app.get("*", (_, res) => {
-  res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
+  res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
 });
-
-export default app;
