@@ -15,6 +15,7 @@ import {
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { UpdateCartQuantityBtn } from "./UpdateCartQuantityBtn";
+
 export function Cart() {
   const { cart, isLoading, getItemsFromCart, removeItemFromCart } =
     useProductStore();

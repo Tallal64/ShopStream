@@ -6,8 +6,6 @@ import {
   Heart,
   Share2,
   ArrowLeft,
-  Plus,
-  Minus,
   Shield,
   Truck,
   RotateCcw,
@@ -19,7 +17,6 @@ export function ProductDetails({ onBack }) {
   const navigate = useNavigate();
   const { getProductById, isLoading } = useProductAPIs();
   const { _id } = useParams();
-  const [quantity, setQuantity] = useState(1);
   const [isLiked, setIsLiked] = useState(false);
   const [product, setProduct] = useState(null);
 
@@ -35,10 +32,6 @@ export function ProductDetails({ onBack }) {
 
     fetchProduct();
   }, [_id, getProductById]);
-
-  const handleQuantityChange = () => {
-    setQuantity(1);
-  };
 
   const handleBack = () => {
     if (onBack) {
@@ -177,36 +170,9 @@ export function ProductDetails({ onBack }) {
 
             {/* Quantity & Add to Cart */}
             <div className="space-y-6">
-              <div className="flex items-center gap-6">
-                <span className="text-lg font-semibold">Quantity:</span>
-                <div className="flex items-center border shadow-sm bg-card rounded-xl">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleQuantityChange(-1)}
-                    disabled={quantity <= 1}
-                    className="w-12 h-12"
-                  >
-                    <Minus className="w-5 h-5" />
-                  </Button>
-                  <span className="px-6 py-3 min-w-[80px] text-center font-semibold text-lg">
-                    {quantity}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleQuantityChange(1)}
-                    className="w-12 h-12"
-                  >
-                    <Plus className="w-5 h-5" />
-                  </Button>
-                </div>
-              </div>
-
               <div className="flex gap-4">
                 <AddToCartBtn
                   product={product}
-                  quantity={quantity}
                   icon={true}
                   size={"lg"}
                   className={
