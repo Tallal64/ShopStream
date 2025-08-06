@@ -33,9 +33,6 @@ export default function App() {
 
   const isAdmin = user?.role === "admin";
 
-  // TODO: remove this console log in production
-  console.log("User from store:", user);
-
   return (
     <div>
       <div>
