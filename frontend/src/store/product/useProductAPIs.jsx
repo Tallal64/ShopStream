@@ -3,6 +3,7 @@ import { create } from "zustand";
 
 export const useProductAPIs = create((set) => ({
   products: [],
+  adminProducts: [],
   categoryProducts: [],
   isLoading: false,
 
@@ -30,7 +31,6 @@ export const useProductAPIs = create((set) => ({
         set((state) => ({
           products: [...state.products, responseData.data],
         }));
-        console.log(responseData.data);
         toast.success("Product created successfully!");
       } else {
         toast.error(responseData.error || "Failed to create product");
@@ -107,6 +107,27 @@ export const useProductAPIs = create((set) => ({
       console.error("Error fetching product by ID:", error);
       toast.error("Failed to fetch product: Network error");
       return null;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  getAdminProducts: async () => {
+    try {
+      set({ isLoading: true });
+      const response = await fetch("/api/products/admin-products", {
+        credentials: "include",
+      });
+
+      const responseData = await response.json();
+      if (responseData.success) {
+        set({ adminProducts: responseData.data });
+      } else {
+        toast.error(responseData.error || "Failed to fetch admin products");
+      }
+    } catch (error) {
+      console.error("Error fetching admin products:", error);
+      toast.error("Failed to fetch admin products: Network error");
     } finally {
       set({ isLoading: false });
     }

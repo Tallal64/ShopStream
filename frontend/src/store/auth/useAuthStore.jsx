@@ -131,11 +131,7 @@ export const useAuthStore = create((set) => ({
       });
 
       const responseData = await response.json();
-      if (responseData.success) {
-        console.log(
-          responseData.message || "Access token refreshed successfully"
-        );
-      } else {
+      if (!responseData.success) {
         console.warn(responseData.error || "Failed to refresh access token");
       }
       return responseData;

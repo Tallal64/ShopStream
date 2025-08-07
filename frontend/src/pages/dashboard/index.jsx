@@ -1,9 +1,9 @@
-import CreateProductForm from "@/components/layout/CreateProductForm";
+import { AdminDashboard } from "@/components/adminDashboard/AdminDashboard";
 
 export default function Dashboard() {
   return (
     <div>
-      <CreateProductForm />
+      <AdminDashboard />
     </div>
   );
 }

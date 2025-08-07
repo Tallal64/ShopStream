@@ -34,6 +34,7 @@ export const createProduct = async (req, res) => {
     const productData = await Product.create({
       ...product,
       image: productImage.url,
+      createdBy: req.user._id,
     });
 
     res.status(201).json({
@@ -43,7 +44,7 @@ export const createProduct = async (req, res) => {
     });
   } catch (error) {
     console.error("server error", error);
-    res.status(401).json({ error: "error when creating a product" });
+    res.status(500).json({ error: "Error when creating a product" });
   }
 };
 
@@ -164,5 +165,22 @@ export const getProductsByCategory = async (req, res) => {
     res.status(500).json({
       error: "Error when getting products by category",
     });
+  }
+};
+
+export const getAdminProducts = async (req, res) => {
+  try {
+    const adminId = req.user?._id;
+
+    const products = await Product.find({ createdBy: adminId }).lean();
+
+    res.status(200).json({
+      success: true,
+      message: "Admin products fetched successfully",
+      data: products,
+    });
+  } catch (error) {
+    console.error("Error fetching admin products:", error);
+    res.status(500).json({ error: "Server error fetching products" });
   }
 };

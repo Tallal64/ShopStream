@@ -1,0 +1,35 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Package, Plus } from "lucide-react";
+import CreateProductForm from "./CreateProductForm";
+import Products from "./Products";
+
+export function AdminDashboard() {
+  return (
+    <div className="min-h-screen bg-background mt-10">
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <Tabs defaultValue="analytics" className="space-y-8">
+          <TabsList className="grid w-full grid-cols-3 bg-card/50 backdrop-blur-sm border shadow-sm">
+            <TabsTrigger value="products" className="flex items-center gap-2">
+              <Package className="w-4 h-4" />
+              Products
+            </TabsTrigger>
+            <TabsTrigger value="create" className="flex items-center gap-2">
+              <Plus className="w-4 h-4" />
+              Create Product
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Products Tab */}
+          <TabsContent value="products" className="space-y-6">
+            <Products />
+          </TabsContent>
+
+          {/* Create Product Tab */}
+          <TabsContent value="create" className="space-y-6">
+            <CreateProductForm />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  );
+}

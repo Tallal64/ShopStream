@@ -26,7 +26,6 @@ export default function CreateProductForm() {
     category: "",
     description: "",
   });
-
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -52,16 +51,12 @@ export default function CreateProductForm() {
     });
   };
 
-  // TODO: make animation for form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setCreateProductBtn(true);
     const response = await createProduct(formData);
 
-    console.log("Product creation response:", response);
-    if (response.success) {
-      console.log("Product created successfully:", response.data);
-    } else {
+    if (!response.success) {
       console.error("Failed to create product:", response.error);
     }
 

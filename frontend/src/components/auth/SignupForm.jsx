@@ -39,7 +39,6 @@ export default function SignupForm() {
       const response = await registerUser(userData);
       if (response.success) {
         toast.success("Registration successful!");
-        console.log("Registration successful:", response.user);
       } else {
         console.error("Registration failed:", response.error);
       }
