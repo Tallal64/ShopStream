@@ -8,7 +8,7 @@ export const useAuthStore = create((set) => ({
   registerUser: async (userData) => {
     try {
       set({ isLoading: true });
-      const response = await fetch("http://localhost:8080/api/user/register", {
+      const response = await fetch("/api/user/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -42,7 +42,7 @@ export const useAuthStore = create((set) => ({
   loginUser: async (credentials) => {
     try {
       set({ isLoading: true });
-      const response = await fetch("http://localhost:8080/api/user/login", {
+      const response = await fetch("/api/user/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -74,7 +74,7 @@ export const useAuthStore = create((set) => ({
   logout: async () => {
     try {
       set({ isLoading: true });
-      const response = await fetch("http://localhost:8080/api/user/logout", {
+      const response = await fetch("/api/user/logout", {
         method: "POST",
         credentials: "include",
       });
@@ -97,7 +97,7 @@ export const useAuthStore = create((set) => ({
   getCurrentUser: async () => {
     try {
       set({ isLoading: true });
-      const response = await fetch("http://localhost:8080/api/user/me", {
+      const response = await fetch("/api/user/me", {
         method: "GET",
         credentials: "include",
       });
@@ -125,13 +125,10 @@ export const useAuthStore = create((set) => ({
   refreshAccessToken: async () => {
     try {
       set({ isLoading: true });
-      const response = await fetch(
-        "http://localhost:8080/api/user/refresh-token",
-        {
-          method: "POST",
-          credentials: "include",
-        }
-      );
+      const response = await fetch("/api/user/refresh-token", {
+        method: "POST",
+        credentials: "include",
+      });
 
       const responseData = await response.json();
       if (responseData.success) {
