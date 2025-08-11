@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/auth/useAuthStore";
-import { useProductStore } from "@/store/product/useProductStore";
+import { useCartAPIs } from "@/store/product/useCartAPIs";
 
 export function UpdateCartQuantityBtn({
   productId,
@@ -11,7 +11,7 @@ export function UpdateCartQuantityBtn({
   className = "h-8 w-8",
   ...restProps
 }) {
-  const { getItemsFromCart, updateQuantity } = useProductStore();
+  const { getItemsFromCart, updateQuantity } = useCartAPIs();
   const { user } = useAuthStore();
 
   const handleCartQuantityUpdate = async () => {

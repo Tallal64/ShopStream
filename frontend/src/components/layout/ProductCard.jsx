@@ -9,7 +9,7 @@ export function ProductCard({ product }) {
   return (
     <Link to={`/product/${product._id}`}>
       <Card
-        className="relative overflow-hidden transition-all duration-500 transform border-0 shadow-sm cursor-pointer group hover:shadow-2xl hover:-translate-y-2"
+        className="relative py-0 overflow-hidden transition-all duration-500 transform border-0 shadow-sm cursor-pointer group hover:shadow-2xl hover:-translate-y-2"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -18,7 +18,7 @@ export function ProductCard({ product }) {
             src={product.image}
             alt={product.title}
             className="object-cover w-full h-full transition-all duration-700 group-hover:scale-110"
-          />
+          />  
 
           <div
             className={`absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent transition-opacity duration-300 ${

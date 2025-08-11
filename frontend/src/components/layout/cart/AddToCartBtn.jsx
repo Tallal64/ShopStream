@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/auth/useAuthStore";
-import { useProductStore } from "@/store/product/useProductStore";
+import { useCartAPIs } from "@/store/product/useCartAPIs";
 import { ShoppingCart } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -13,7 +13,7 @@ export default function AddToCartBtn({
   className,
   ...restProps
 }) {
-  const { addToCart, getItemsFromCart } = useProductStore();
+  const { addToCart, getItemsFromCart } = useCartAPIs();
   const { user } = useAuthStore();
 
   const handleAddToCart = async (e) => {

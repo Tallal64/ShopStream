@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/store/auth/useAuthStore";
-import { useProductStore } from "@/store/product/useProductStore";
+import { useCartAPIs } from "@/store/product/useCartAPIs";
 import { useTheme } from "@/store/theme";
 import {
   LayoutDashboard,
@@ -17,7 +17,7 @@ import { Badge } from "../ui/badge";
 
 export default function Header() {
   const { user, logout } = useAuthStore();
-  const { cart, getItemsFromCart } = useProductStore();
+  const { cart, getItemsFromCart } = useCartAPIs();
   const { isDarkMode, setTheme } = useTheme();
 
   const isAdmin = user?.role === "admin";

@@ -78,6 +78,48 @@ export const getProduct = async (req, res) => {
   }
 };
 
+export const getProductsByCategory = async (req, res) => {
+  try {
+    const { category } = req.params;
+
+    if (!category) {
+      return res.status(400).json({ error: "Category parameter is required" });
+    }
+
+    const products = await Product.find({
+      category: { $regex: new RegExp(category, "i") },
+    });
+
+    res.status(200).json({
+      success: true,
+      data: products,
+      category: category,
+    });
+  } catch (error) {
+    console.error("Error fetching products by category:", error);
+    res.status(500).json({
+      error: "Error when getting products by category",
+    });
+  }
+};
+
+export const getAdminProducts = async (req, res) => {
+  try {
+    const adminId = req.user?._id;
+
+    const products = await Product.find({ createdBy: adminId }).lean();
+
+    res.status(200).json({
+      success: true,
+      message: "Admin products fetched successfully",
+      data: products,
+    });
+  } catch (error) {
+    console.error("Error fetching admin products:", error);
+    res.status(500).json({ error: "Server error fetching products" });
+  }
+};
+
 export const deleteProducts = async (req, res) => {
   const { Id } = req.params;
 
@@ -130,57 +172,18 @@ export const updateProduct = async (req, res) => {
       product.image = updatedProductImage.url;
     }
 
-    await Product.findByIdAndUpdate(Id, product, { new: true });
+    const updatedProduct = await Product.findByIdAndUpdate(Id, product, {
+      new: true,
+    });
 
     res.status(200).json({
       success: true,
       message: "product updated successfully",
+      data: updatedProduct,
     });
   } catch (error) {
     res.status(500).json({
       error: "error while updating product",
     });
-  }
-};
-
-export const getProductsByCategory = async (req, res) => {
-  try {
-    const { category } = req.params;
-
-    if (!category) {
-      return res.status(400).json({ error: "Category parameter is required" });
-    }
-
-    const products = await Product.find({
-      category: { $regex: new RegExp(category, "i") },
-    });
-
-    res.status(200).json({
-      success: true,
-      data: products,
-      category: category,
-    });
-  } catch (error) {
-    console.error("Error fetching products by category:", error);
-    res.status(500).json({
-      error: "Error when getting products by category",
-    });
-  }
-};
-
-export const getAdminProducts = async (req, res) => {
-  try {
-    const adminId = req.user?._id;
-
-    const products = await Product.find({ createdBy: adminId }).lean();
-
-    res.status(200).json({
-      success: true,
-      message: "Admin products fetched successfully",
-      data: products,
-    });
-  } catch (error) {
-    console.error("Error fetching admin products:", error);
-    res.status(500).json({ error: "Server error fetching products" });
   }
 };

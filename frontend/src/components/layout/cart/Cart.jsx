@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useAuthStore } from "@/store/auth/useAuthStore";
-import { useProductStore } from "@/store/product/useProductStore";
+import { useCartAPIs } from "@/store/product/useCartAPIs";
 import {
   Plus,
   Minus,
@@ -18,7 +18,7 @@ import { UpdateCartQuantityBtn } from "./UpdateCartQuantityBtn";
 
 export function Cart() {
   const { cart, isLoading, getItemsFromCart, removeItemFromCart } =
-    useProductStore();
+    useCartAPIs();
   const { user } = useAuthStore();
 
   useEffect(() => {

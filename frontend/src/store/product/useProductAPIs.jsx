@@ -66,29 +66,6 @@ export const useProductAPIs = create((set) => ({
     }
   },
 
-  getProductsByCategory: async (category) => {
-    try {
-      set({ isLoading: true });
-      const response = await fetch(`/api/products/category/${category}`, {
-        credentials: "include",
-      });
-
-      const responseData = await response.json();
-      if (responseData.success) {
-        set({ categoryProducts: responseData.data });
-      } else {
-        toast.error(responseData.error || "Failed to fetch category products");
-        set({ categoryProducts: [] });
-      }
-    } catch (error) {
-      console.error("Error fetching category products:", error);
-      toast.error("Failed to fetch category products: Network error");
-      set({ categoryProducts: [] });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-
   getProductById: async (_id) => {
     try {
       set({ isLoading: true });
@@ -112,6 +89,29 @@ export const useProductAPIs = create((set) => ({
     }
   },
 
+  getProductsByCategory: async (category) => {
+    try {
+      set({ isLoading: true });
+      const response = await fetch(`/api/products/category/${category}`, {
+        credentials: "include",
+      });
+
+      const responseData = await response.json();
+      if (responseData.success) {
+        set({ categoryProducts: responseData.data });
+      } else {
+        toast.error(responseData.error || "Failed to fetch category products");
+        set({ categoryProducts: [] });
+      }
+    } catch (error) {
+      console.error("Error fetching category products:", error);
+      toast.error("Failed to fetch category products: Network error");
+      set({ categoryProducts: [] });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
   getAdminProducts: async () => {
     try {
       set({ isLoading: true });
@@ -128,6 +128,66 @@ export const useProductAPIs = create((set) => ({
     } catch (error) {
       console.error("Error fetching admin products:", error);
       toast.error("Failed to fetch admin products: Network error");
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  deleteProduct: async (_id) => {
+    try {
+      set({ isLoading: true });
+      const response = await fetch(`/api/products/${_id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      const responseData = await response.json();
+      if (responseData.success) {
+        set((state) => ({
+          products: state.products.filter((product) => product._id !== _id),
+        }));
+        toast.success("Product deleted successfully!");
+      } else {
+        toast.error(responseData.error || "Failed to delete product");
+      }
+      return responseData;
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      toast.error("Failed to delete product: Network error");
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  updateProduct: async (productId, productData) => {
+    try {
+      set({ isLoading: true });
+
+      const formData = new FormData();
+      formData.append("title", productData.title);
+      formData.append("price", productData.price);
+      formData.append("category", productData.category);
+      formData.append("description", productData.description);
+      if (productData.image) {
+        formData.append("image", productData.image);
+      }
+
+      const response = await fetch(`/api/products/${productId}`, {
+        method: "PUT",
+        body: formData,
+        credentials: "include",
+      });
+
+      const responseData = await response.json();
+      if (responseData.success) {
+        toast.success("Product updated successfully!");
+      } else {
+        toast.error(responseData.error || "Failed to update product");
+      }
+      return responseData;
+    } catch (error) {
+      console.error("Error updating product:", error);
+      toast.error("Failed to update product: Network error");
     } finally {
       set({ isLoading: false });
     }
