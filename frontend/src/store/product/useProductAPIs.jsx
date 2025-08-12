@@ -163,24 +163,26 @@ export const useProductAPIs = create((set) => ({
     try {
       set({ isLoading: true });
 
-      const formData = new FormData();
-      formData.append("title", productData.title);
-      formData.append("price", productData.price);
-      formData.append("category", productData.category);
-      formData.append("description", productData.description);
-      if (productData.image) {
-        formData.append("image", productData.image);
-      }
+      console.log("Updating product:", productId, productData);
 
       const response = await fetch(`/api/products/${productId}`, {
         method: "PUT",
-        body: formData,
+        body: productData,
         credentials: "include",
       });
 
       const responseData = await response.json();
+
       if (responseData.success) {
-        toast.success("Product updated successfully!");
+        set((state) => ({
+          products: state.products.map((product) =>
+            product._id === productId ? responseData.data : product
+          ),
+          adminProducts: state.adminProducts.map((product) =>
+            product._id === productId ? responseData.data : product
+          ),
+        }));
+        toast.success(responseData.message || "Product updated successfully!");
       } else {
         toast.error(responseData.error || "Failed to update product");
       }
@@ -188,6 +190,7 @@ export const useProductAPIs = create((set) => ({
     } catch (error) {
       console.error("Error updating product:", error);
       toast.error("Failed to update product: Network error");
+      return { success: false, error: "Network error" };
     } finally {
       set({ isLoading: false });
     }

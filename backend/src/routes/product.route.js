@@ -22,8 +22,8 @@ router.delete("/:Id", verifyJWT, verifyAdmin, deleteProducts);
 router.put(
   "/:Id",
   verifyJWT,
-  upload.single("image"),
   verifyAdmin,
+  upload.single("image"),
   updateProduct
 );
 

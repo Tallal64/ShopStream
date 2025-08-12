@@ -18,7 +18,7 @@ export function ProductCard({ product }) {
             src={product.image}
             alt={product.title}
             className="object-cover w-full h-full transition-all duration-700 group-hover:scale-110"
-          />  
+          />
 
           <div
             className={`absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent transition-opacity duration-300 ${
@@ -34,7 +34,7 @@ export function ProductCard({ product }) {
         </div>
 
         <div className="p-6 space-y-4">
-          <h3 className="font-semibold leading-tight transition-colors duration-300 text-foreground line-clamp-2 group-hover:text-primary">
+          <h3 className="font-semibold leading-tight capitalize transition-colors duration-300 text-foreground line-clamp-2 group-hover:text-primary">
             {product.title}
           </h3>
 

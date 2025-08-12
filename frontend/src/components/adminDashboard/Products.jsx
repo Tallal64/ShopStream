@@ -16,12 +16,19 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import UpdateProductForm from "./UpdateProductForm";
 
 export default function Products() {
-  const [deletingProduct, setDeletingProduct] = useState(null | "");
-  const [open, setOpen] = useState(false);
+  const [deletingProductId, setDeletingProductId] = useState(null | "");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const { adminProducts, getAdminProducts, deleteProduct } = useProductAPIs();
 
@@ -31,10 +38,10 @@ export default function Products() {
 
   const handleDeleteProduct = async (productId) => {
     const response = await deleteProduct(productId);
-    setDeletingProduct(productId);
+    setDeletingProductId(productId);
 
     if (!response.success) {
-      setDeletingProduct(null);
+      setDeletingProductId(null);
     }
     getAdminProducts();
   };
@@ -115,32 +122,13 @@ export default function Products() {
                     variant="ghost"
                     size="sm"
                     className="w-8 h-8 p-0"
-                    onClick={() => setOpen(true)}
+                    onClick={() => {
+                      setSelectedProduct(product);
+                      setIsModalOpen(true);
+                    }}
                   >
                     <Edit className="w-4 h-4" />
                   </Button>
-
-                  {/* Edit modal */}
-                  <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogContent
-                      className="max-w-[95vw] sm:max-w-xl md:max-w-2xl lg:max-w-3xl p-0 overflow-y-auto max-h-[95vh]"
-                      aria-describedby="edit-product-description"
-                    >
-                      <DialogHeader className="sr-only">
-                        <DialogTitle>Edit Product</DialogTitle>
-                      </DialogHeader>
-                      <div className="p-3 sm:p-4 md:p-6">
-                        <UpdateProductForm
-                          _id={product._id}
-                          title={product.title}
-                          price={product.price}
-                          category={product.category}
-                          description={product.description}
-                          onCancel={() => setOpen(false)}
-                        />
-                      </div>
-                    </DialogContent>
-                  </Dialog>
 
                   {/* Delete  */}
                   <AlertDialog>
@@ -149,9 +137,9 @@ export default function Products() {
                         variant="ghost"
                         size="sm"
                         className="w-8 h-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                        disabled={deletingProduct === product._id}
+                        disabled={deletingProductId === product._id}
                       >
-                        {deletingProduct === product._id ? (
+                        {deletingProductId === product._id ? (
                           <Loader2 className="w-4 h-4 animate-spin" />
                         ) : (
                           <Trash2 className="w-4 h-4" />
@@ -183,7 +171,7 @@ export default function Products() {
                         <AlertDialogAction
                           onClick={() => handleDeleteProduct(product._id)}
                           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                          disabled={deletingProduct === product._id}
+                          disabled={deletingProductId === product._id}
                         >
                           <>
                             <Trash2 className="w-4 h-4 mr-2" />
@@ -199,6 +187,33 @@ export default function Products() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Edit modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-[95vw] sm:max-w-xl md:max-w-2xl lg:max-w-3xl p-0 overflow-y-auto max-h-[95vh]">
+          <DialogHeader className="p-3 sm:p-4 md:p-6">
+            <DialogTitle>Edit Product</DialogTitle>
+            <DialogDescription>
+              Update the details of the product.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="p-3 sm:p-4 md:p-6">
+            {selectedProduct && (
+              <UpdateProductForm
+                _id={selectedProduct._id}
+                title={selectedProduct.title}
+                price={selectedProduct.price}
+                category={selectedProduct.category}
+                description={selectedProduct.description}
+                onCancel={() => {
+                  setIsModalOpen(false);
+                  getAdminProducts(); // Refresh the product list
+                }}
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

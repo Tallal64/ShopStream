@@ -149,15 +149,43 @@ export const updateProduct = async (req, res) => {
   const product = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(Id)) {
-    return res.status(401).json({ error: "invalid product Id" });
+    return res.status(400).json({ error: "invalid product Id" });
+  }
+
+  if (
+    !product.title?.trim() &&
+    !product.price &&
+    !product.category?.trim() &&
+    !product.description?.trim() &&
+    !req.file
+  ) {
+    return res
+      .status(400)
+      .json({ error: "At least one field is required to update" });
   }
 
   try {
     const existedProduct = await Product.findById(Id);
     if (!existedProduct) {
-      return res.status(404).json({ error: "the product doesn't exists" });
+      return res.status(404).json({ error: "the product doesn't exist" });
     }
 
+    if (existedProduct.createdBy.toString() !== req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ error: "You are not authorized to update this product" });
+    }
+
+    let updateData = {};
+
+    // Only update fields that are provided
+    if (product.title?.trim()) updateData.title = product.title.trim();
+    if (product.price) updateData.price = product.price;
+    if (product.category?.trim()) updateData.category = product.category.trim();
+    if (product.description?.trim())
+      updateData.description = product.description.trim();
+
+    // Handle image update if provided
     if (req.file) {
       const updateImageLocalPath = req.file.path;
       const updatedProductImage = await uploadOnCloudinary(
@@ -169,10 +197,10 @@ export const updateProduct = async (req, res) => {
           .status(400)
           .json({ error: "error while updating the image" });
       }
-      product.image = updatedProductImage.url;
+      updateData.image = updatedProductImage.url;
     }
 
-    const updatedProduct = await Product.findByIdAndUpdate(Id, product, {
+    const updatedProduct = await Product.findByIdAndUpdate(Id, updateData, {
       new: true,
     });
 
@@ -182,8 +210,10 @@ export const updateProduct = async (req, res) => {
       data: updatedProduct,
     });
   } catch (error) {
+    console.error("Error updating product:", error);
     res.status(500).json({
       error: "error while updating product",
+      details: error.message,
     });
   }
 };
