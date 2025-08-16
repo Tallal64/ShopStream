@@ -17,9 +17,14 @@ import { Link } from "react-router-dom";
 import { UpdateCartQuantityBtn } from "./UpdateCartQuantityBtn";
 
 export function Cart() {
-  const { cart, isLoading, getItemsFromCart, removeItemFromCart } =
-    useCartAPIs();
   const { user } = useAuthStore();
+  const {
+    cart,
+    isLoading,
+    getItemsFromCart,
+    removeItemFromCart,
+    createCheckoutSession,
+  } = useCartAPIs();
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -40,6 +45,10 @@ export function Cart() {
         response?.error || "Unknown error"
       );
     }
+  };
+
+  const handleCheckout = async () => {
+    await createCheckoutSession(cart);
   };
 
   // Dynamic calculations
@@ -221,7 +230,10 @@ export function Cart() {
               </div>
 
               <div className="space-y-3">
-                <Button className="w-full h-12 font-semibold">
+                <Button
+                  onClick={handleCheckout}
+                  className="w-full h-12 font-semibold"
+                >
                   <CreditCard className="w-5 h-5 mr-2" />
                   Proceed to Checkout
                 </Button>

@@ -5,6 +5,7 @@
 - When generating new code, please follow the existing coding style.
 - Write comments infront of new generated code.
 - Avoid changes in the files which are outside of the src folders unless necessary
+- When generate or modify the code, add the comments to describe changes.
 
 ## Project Overview
 

@@ -15,7 +15,11 @@ This document provides a concise overview of the ShopStream e-commerce web appli
 
 ## Future Enhancements
 
-- **User Account:** Session auto-refresh, password recovery, and order history.
+- **Stripe:** Stripe for payments.
+- **User Auto Refresh:** Session auto-refresh, password recovery, and order history.
 - **Product Discovery:** Implement product search, filtering, and customer reviews.
-- **Cart & Checkout:** Persist shopping carts and introduce a coupon system.
 - **Admin Capabilities:** Expand the dashboard to include user and order management, and analytics.
+
+## TODO
+
+implement the stripe

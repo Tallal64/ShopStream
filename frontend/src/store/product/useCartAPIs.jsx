@@ -121,4 +121,36 @@ export const useCartAPIs = create((set) => ({
       set({ isLoading: false });
     }
   },
+
+  createCheckoutSession: async (products) => {
+    try {
+      set({ isLoading: true });
+      const response = await fetch("/api/order/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          products: products.map((item) => ({
+            name: item.product?.title,
+            price: item.product?.price,
+            quantity: item.quantity,
+          })),
+        }),
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url; // Stripe hosted page
+      } else {
+        console.error("Stripe session error:", data);
+        toast.error("Failed to create checkout session");
+      }
+    } catch (error) {
+      console.error("Checkout failed:", error);
+      toast.error("Checkout failed: Network error");
+    } finally {
+      set({ isLoading: false });
+    }
+  },
 }));

@@ -9,6 +9,8 @@ import Dashboard from "./pages/dashboard";
 import CategoryProducts from "./pages/category/CategoryProducts";
 import { ProductDetails } from "./pages/productDetail/ProductDetails";
 import { Cart } from "./components/layout/cart/Cart";
+import Success from "./pages/order/Success";
+import Cancel from "./pages/order/Cancel";
 
 export default function App() {
   const { user, getCurrentUser, refreshAccessToken, isLoading } =
@@ -38,6 +40,7 @@ export default function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          {/* auth */}
           <Route
             path="/signup"
             element={!user ? <Signup /> : <Navigate to="/" />}
@@ -54,6 +57,9 @@ export default function App() {
           <Route path="/:category" element={<CategoryProducts />} />
           <Route path="/product/:_id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />
+
+          <Route path="/success" element={<Success />} />
+          <Route path="/cancel" element={<Cancel />} />
         </Routes>
       </div>
     </div>
