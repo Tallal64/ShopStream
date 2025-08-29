@@ -4,8 +4,9 @@
 
 - When generating new code, please follow the existing coding style.
 - Write comments infront of new generated code.
-- Avoid changes in the files which are outside of the src folders unless necessary
+- Avoid changes in the files which are outside of the src folders unless necessary.
 - When generate or modify the code, add the comments to describe changes.
+- Don't make changes to the routes path in `backend/src/routes`.
 
 ## Project Overview
 
@@ -92,6 +93,7 @@ This will start the backend server, which will also serve the frontend files.
   - **Backend API Routes**: The backend API routes are defined in the `backend/src/routes` directory.
   - **Backend Controllers**: The backend controllers are defined in the `backend/src/controllers` directory.
   - **Backend middleware**: The backend middleware are defined in the `backend/src/middleware` directory.
+  - **Backend webHooks**: These are stripe webhooks and are defined in `backend/src/controllers/webHook.controller.js`
 
 - **Frontend**
 

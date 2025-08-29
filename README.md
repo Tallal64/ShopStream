@@ -16,6 +16,7 @@ This is a full-stack e-commerce web application called ShopStream. It is built w
   - bcrypt for passwords encryption
   - cookie-parser for handling the cookies
   - nodemon (in development)
+  - Stripe for payments
 - **Frontend:**
   - React
   - Vite

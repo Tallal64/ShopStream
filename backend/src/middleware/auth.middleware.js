@@ -8,9 +8,9 @@ export const verifyJWT = async (req, res, next) => {
       req.header("Authorization")?.replace("Bearer ", "");
 
     if (!token) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        error: "Access token required - please login" 
+        error: "Access token required - please login",
       });
     }
 
@@ -18,36 +18,36 @@ export const verifyJWT = async (req, res, next) => {
     try {
       decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     } catch (jwtError) {
-      if (jwtError.name === 'TokenExpiredError') {
-        return res.status(401).json({ 
+      if (jwtError.name === "TokenExpiredError") {
+        return res.status(401).json({
           success: false,
           error: "Access token expired",
-          tokenExpired: true
+          tokenExpired: true,
         });
       }
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        error: "Invalid access token" 
+        error: "Invalid access token",
       });
     }
 
     const user = await User.findById(decodedToken?._id);
 
     if (!user) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         success: false,
-        error: "User not found - invalid access token" 
+        error: "User not found - invalid access token",
       });
     }
 
     req.user = user;
     next();
   } catch (error) {
-    console.error('Auth middleware error:', error);
-    res.status(401).json({ 
+    console.error("Auth middleware error:", error);
+    res.status(401).json({
       success: false,
-      error: "Unauthorized request" 
-    }); 
+      error: "Unauthorized request",
+    });
   }
 };
 

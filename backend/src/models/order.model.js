@@ -6,6 +6,7 @@ const orderSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       index: true,
+      required: true,
     },
     products: [
       {
@@ -13,6 +14,7 @@ const orderSchema = new Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: "Product",
           index: true,
+          required: true,
         },
         quantity: {
           type: Number,
@@ -27,13 +29,15 @@ const orderSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "completed", "cancelled"],
+      enum: ["pending", "paid", "cancelled", "failed"],
       default: "pending",
     },
     stripeSessionId: {
       type: String,
       required: true,
     },
+    paymentId: String,
+    paidAt: Date,
   },
   {
     timestamps: true,

@@ -9,8 +9,9 @@ import Dashboard from "./pages/dashboard";
 import CategoryProducts from "./pages/category/CategoryProducts";
 import { ProductDetails } from "./pages/productDetail/ProductDetails";
 import { Cart } from "./components/layout/cart/Cart";
-import Success from "./pages/order/Success";
-import Cancel from "./pages/order/Cancel";
+import SuccessPage from "./pages/order/Success";
+import CancelPage from "./pages/order/Cancel";
+import OrderHistoryPage from "./pages/order/OrderHistoryPage";
 
 export default function App() {
   const { user, getCurrentUser, refreshAccessToken, isLoading } =
@@ -58,8 +59,12 @@ export default function App() {
           <Route path="/product/:_id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />
 
-          <Route path="/success" element={<Success />} />
-          <Route path="/cancel" element={<Cancel />} />
+          <Route path="/success" element={<SuccessPage />} />
+          <Route path="/cancel" element={<CancelPage />} />
+          <Route
+            path="/my-orders"
+            element={user ? <OrderHistoryPage /> : <Navigate to="/login" />}
+          />
         </Routes>
       </div>
     </div>

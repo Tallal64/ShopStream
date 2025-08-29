@@ -12,14 +12,10 @@ This document provides a concise overview of the ShopStream e-commerce web appli
 - **Product Catalog:** Browse products by category and view detailed product information.
 - **Shopping Cart:** Add, remove, and view items in the cart.
 - **Admin Dashboard:** Manage the product inventory (create, update, delete products).
+- **Stripe Webhook for payments:** Integrate stripe webhooks
 
 ## Future Enhancements
 
-- **Stripe:** Stripe for payments.
 - **User Auto Refresh:** Session auto-refresh, password recovery, and order history.
 - **Product Discovery:** Implement product search, filtering, and customer reviews.
 - **Admin Capabilities:** Expand the dashboard to include user and order management, and analytics.
-
-## TODO
-
-implement the stripe

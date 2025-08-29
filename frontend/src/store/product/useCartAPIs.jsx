@@ -125,30 +125,74 @@ export const useCartAPIs = create((set) => ({
   createCheckoutSession: async (products) => {
     try {
       set({ isLoading: true });
+
+      // Basic validation
+      if (!products || !Array.isArray(products) || products.length === 0) {
+        toast.error("Your cart is empty. Please add items to proceed.");
+        return;
+      }
+
+      // Validate each product
+      const invalidProducts = products.filter(
+        (item) =>
+          !item.product?._id ||
+          !item.product?.title ||
+          !item.product?.price ||
+          !item.quantity
+      );
+
+      if (invalidProducts.length > 0) {
+        console.error("Invalid product data found:", invalidProducts);
+        toast.error(
+          "Some items in your cart are invalid. Please refresh and try again."
+        );
+        return { success: false, error: "Invalid product data" };
+      }
+
+      // prepare data for backend
+      const checkoutData = {
+        products: products.map((item) => ({
+          productId: item.product?._id,
+          name: item.product?.title,
+          price: item.product?.price,
+          image: item.product?.image,
+          quantity: item.quantity,
+        })),
+      };
+
       const response = await fetch("/api/order/checkout", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          products: products.map((item) => ({
-            name: item.product?.title,
-            price: item.product?.price,
-            quantity: item.quantity,
-          })),
-        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(checkoutData),
         credentials: "include",
       });
 
-      const data = await response.json();
+      if (response.status === 401) {
+        toast.error("You must be logged in to proceed to checkout.");
+        return;
+      }
 
-      if (data.url) {
-        window.location.href = data.url; // Stripe hosted page
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.error || `Server error! status: ${response.status}`
+        );
+      }
+
+      const responseData = await response.json();
+      if (responseData && responseData.url) {
+        window.location.href = responseData.url;
       } else {
-        console.error("Stripe session error:", data);
-        toast.error("Failed to create checkout session");
+        throw new Error("Invalid response from server. Please try again.");
       }
     } catch (error) {
-      console.error("Checkout failed:", error);
-      toast.error("Checkout failed: Network error");
+      console.error("Error creating checkout session frontend:", error);
+      toast.error(
+        error.message ||
+          "Failed to create checkout session. Please try again later."
+      );
     } finally {
       set({ isLoading: false });
     }
