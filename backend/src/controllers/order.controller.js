@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { Order } from "../models/order.model.js";
 import { stripe } from "../utils/stripe.js";
 

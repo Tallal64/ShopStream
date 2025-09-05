@@ -20,6 +20,7 @@ This document provides a concise overview of the ShopStream e-commerce web appli
 - **User Auto Refresh:** Session auto-refresh
 - **Product Discovery:** Implement product search, filtering, and customer reviews.
 - **Admin Capabilities:** Expand the dashboard to include user and order management, and analytics.
+- **Add Helper funtion for backend controllers:**Use AsyncHandler() instead of try-catch
 
 ## Future Enhancements (Optional)
 
